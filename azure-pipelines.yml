@@ -8,11 +8,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  # nome da aplicação só pra montar o nome da imagem
   appName: 'motoblu556496'
+  # nome do ACR que ele criou no Azure
   acrName: 'acrfiap556496'
+  # endereço do ACR
   acrLoginServer: 'acrfiap556496.azurecr.io'
+  # repositório de imagem dentro do ACR
   imageRepository: 'fiap/$(appName)'
+  # onde está o Dockerfile no repo
   dockerfilePath: '**/Dockerfile'
+  # tag da imagem: número do build
   tag: '$(Build.BuildNumber)'
 
 stages:
@@ -25,9 +31,14 @@ stages:
     - task: Docker@2
       displayName: 'Build and push image'
       inputs:
-        containerRegistry: 'SC-FIAP-556496'
+        # TEM QUE SER o nome da service connection que você criou
+        containerRegistry: 'sc-acr-fiap556496'
+        # caminho/nome da imagem dentro do ACR
         repository: '$(imageRepository)'
+        # o que a task vai fazer
         command: 'buildAndPush'
+        # onde está o Dockerfile no repo
         Dockerfile: '$(dockerfilePath)'
+        # tags que vão ser criadas
         tags: |
           $(tag)
